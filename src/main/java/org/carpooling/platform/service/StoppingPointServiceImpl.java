@@ -3,7 +3,9 @@ package org.carpooling.platform.service;
 import org.carpooling.platform.dto.request.StoppingPointRequestDTO;
 import org.carpooling.platform.dto.response.StoppingPointResponseDTO;
 import org.carpooling.platform.repository.StoppingPointRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class StoppingPointServiceImpl implements StoppingPointService{
     private final StoppingPointRepository repository;
 
