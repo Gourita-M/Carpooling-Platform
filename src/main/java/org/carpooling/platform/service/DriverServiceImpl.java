@@ -31,24 +31,40 @@ public class DriverServiceImpl implements DriverService{
         return mapper.toResponseDTO(driver);
     }
 
+    //done on Postman
     @Override
     public Page<DriverResponseDTO> findAll(Pageable pageable){
-        return null;
+        Page<Driver> drivers = repository.findAll(pageable);
+        return drivers.map(mapper::toResponseDTO);
     }
 
+    //done on Postman
     @Override
     public Page<DriverResponseDTO> search(String keyword, Pageable pageable){
-        return null;
+        Page<Driver> drivers =
+                repository.findByFirstNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                        keyword,
+                        keyword,
+                        pageable
+                );
+
+        return drivers.map(mapper::toResponseDTO);
     }
 
+    //done on Postman
     @Override
     public DriverResponseDTO update(Long id, DriverRequestDTO request){
-        return null;
+        Driver driver = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is No Driver With this ID"));
+        Driver updated = mapper.toEntity(request);
+        updated.setId(id);
+        return mapper.toResponseDTO(repository.save(updated));
     }
 
+    //done on Postman
     @Override
     public void delete(Long id){
-
+        Driver driver = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is No Driver With this ID"));
+        repository.delete(driver);
     }
 
 }
