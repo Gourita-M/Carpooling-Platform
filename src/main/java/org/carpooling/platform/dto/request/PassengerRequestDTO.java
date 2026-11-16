@@ -1,0 +1,9 @@
+package org.carpooling.platform.dto.request;
+
+public record PassengerRequestDTO(
+        String lastName,
+        String firstName,
+        String email,
+        String phone
+) {}
+
