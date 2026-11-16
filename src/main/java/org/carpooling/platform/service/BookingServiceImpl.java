@@ -6,9 +6,11 @@ import org.carpooling.platform.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Service
 public class BookingServiceImpl implements BookingService{
     private final BookingRepository repository;
 
