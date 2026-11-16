@@ -4,12 +4,13 @@ import org.carpooling.platform.dto.request.DriverRequestDTO;
 import org.carpooling.platform.dto.response.DriverResponseDTO;
 import org.carpooling.platform.entity.Driver;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface DriverMapper {
 
     Driver toEntity(DriverRequestDTO request);
-
     DriverResponseDTO toResponseDTO(Driver driver);
+
 }
 
