@@ -3,11 +3,9 @@ package org.carpooling.platform.service;
 import org.carpooling.platform.dto.request.BookingRequestDTO;
 import org.carpooling.platform.dto.response.BookingResponseDTO;
 import org.carpooling.platform.repository.BookingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 
 @Service
