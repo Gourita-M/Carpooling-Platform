@@ -6,6 +6,7 @@ import org.carpooling.platform.entity.Booking;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
 
