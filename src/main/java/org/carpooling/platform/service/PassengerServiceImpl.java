@@ -5,7 +5,9 @@ import org.carpooling.platform.dto.response.PassengerResponseDTO;
 import org.carpooling.platform.repository.PassengerRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PassengerServiceImpl implements PassengerService{
     private final PassengerRepository repository;
 
