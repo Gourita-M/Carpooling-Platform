@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface TripService {
-    TripResponseDTO create(TripRequestDTO dto);
+    TripResponseDTO create(TripRequestDTO dto,Long driverId);
     TripResponseDTO findById(Long id);
     Page<TripResponseDTO> findAll(Pageable pageable);
     Page<TripResponseDTO> findByDriverId(Long driverId, Pageable pageable);
