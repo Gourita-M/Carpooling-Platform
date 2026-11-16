@@ -5,10 +5,12 @@ import org.carpooling.platform.dto.response.TripResponseDTO;
 import org.carpooling.platform.repository.TripRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Service
 public class TripServiceImpl implements TripService{
     private final TripRepository repository;
 
@@ -17,7 +19,7 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
-    public TripResponseDTO create(TripRequestDTO dto){
+    public TripResponseDTO create(TripRequestDTO dto, Long driverId){
         return null;
     }
 
