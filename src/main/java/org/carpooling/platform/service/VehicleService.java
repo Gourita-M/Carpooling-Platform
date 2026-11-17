@@ -6,7 +6,7 @@ import org.carpooling.platform.dto.response.VehicleResponseDTO;
 import java.util.List;
 
 public interface VehicleService {
-    VehicleResponseDTO create(VehicleRequestDTO dto);
+    VehicleResponseDTO create(VehicleRequestDTO dto, Long driverId);
     VehicleResponseDTO findById(Long id);
     List<VehicleResponseDTO> findByDriverId(Long driverId);
     VehicleResponseDTO update(Long vehicleId, VehicleRequestDTO request);
