@@ -33,24 +33,33 @@ public class PassengerServiceImpl implements PassengerService{
         return mapper.toResponseDTO(passenger);
     }
 
+    //done on PostMan
     @Override
     public Page<PassengerResponseDTO> findAll(Pageable pageable){
         Page<Passenger> passengers = repository.findAll(pageable);
         return passengers.map(mapper::toResponseDTO);
     }
 
+    //done
     @Override
-    public Page<PassengerResponseDTO> search(String keyword, Pageable pageable){
-        return null;
+    public Page<PassengerResponseDTO> search(String email, Pageable pageable){
+        Page<Passenger> passengers = repository.findByEmailContainingIgnoreCase(email, pageable);
+        return passengers.map(mapper::toResponseDTO);
     }
 
+    //done on PostMan
     @Override
     public PassengerResponseDTO update(Long id, PassengerRequestDTO request){
-        return null;
+        Passenger passenger = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Passenger Is Not Found"));
+        Passenger updated = mapper.toEntity(request);
+        updated.setId(id);
+        return mapper.toResponseDTO(repository.save(updated));
     }
 
+    //done on PostMan
     @Override
     public void delete(Long id){
-
+        Passenger passenger = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Passenger Is Not Found"));
+        repository.delete(passenger);
     }
 }
