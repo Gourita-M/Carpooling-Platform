@@ -54,13 +54,17 @@ public class VehicleServiceImpl implements VehicleService{
     @Override
     public VehicleResponseDTO update(Long vehicleId, VehicleRequestDTO request){
         Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Vehicle Is Not Found"));
-        Vehicle updated = mapper.toEntity(request);
-        updated.setId(vehicleId);
-        return mapper.toResponseDTO(repository.save(updated));
+        vehicle.setMake(request.make());
+        vehicle.setModel(request.model());
+        vehicle.setRegistrationNumber(request.registrationNumber());
+        vehicle.setColor(request.color());
+        vehicle.setCapacity(request.capacity());
+        return mapper.toResponseDTO(repository.save(vehicle));
     }
 
     @Override
     public void delete(Long vehicleId){
-
+        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Vehicle Is Not Found"));
+        repository.delete(vehicle);
     }
 }
