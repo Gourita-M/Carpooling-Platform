@@ -28,10 +28,11 @@ public class TripController {
     @PostMapping
     public ResponseEntity<TripResponseDTO> create(
             @Valid @RequestBody TripRequestDTO request,
-            @RequestParam Long driverId) {
+            @RequestParam Long driverId,
+            @RequestParam Long vehicleId) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(tripService.create(request, driverId));
+                .body(tripService.create(request, driverId, vehicleId));
     }
 
     @GetMapping("/{id}")
