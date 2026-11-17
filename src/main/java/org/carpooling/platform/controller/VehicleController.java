@@ -18,11 +18,11 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
 
-    @PostMapping
+    @PostMapping("/{driverId}")
     public ResponseEntity<VehicleResponseDTO> create(
-            @Valid @RequestBody VehicleRequestDTO request) {
+            @Valid @RequestBody VehicleRequestDTO request, @PathVariable("driverId") Long driverId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(vehicleService.create(request));
+                .body(vehicleService.create(request, driverId));
     }
 
     @GetMapping("/{id}")
