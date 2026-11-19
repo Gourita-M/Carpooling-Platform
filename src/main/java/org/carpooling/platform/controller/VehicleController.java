@@ -17,33 +17,33 @@ import java.util.List;
 public class VehicleController {
 
     private final VehicleService vehicleService;
-
+    //PostMan Done
     @PostMapping("/{driverId}")
     public ResponseEntity<VehicleResponseDTO> create(
             @Valid @RequestBody VehicleRequestDTO request, @PathVariable("driverId") Long driverId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(vehicleService.create(request, driverId));
     }
-
+    //PostMan Done
     @GetMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> findById(
             @PathVariable Long id) {
         return ResponseEntity.ok(vehicleService.findById(id));
     }
-
+    //PostMan Done
     @GetMapping("/driver/{driverId}")
     public ResponseEntity<List<VehicleResponseDTO>> findByDriverId(
             @PathVariable Long driverId) {
         return ResponseEntity.ok(vehicleService.findByDriverId(driverId));
     }
-
+    //PostMan Done
     @PutMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody VehicleRequestDTO request) {
         return ResponseEntity.ok(vehicleService.update(id, request));
     }
-
+    //PostMan Done
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         vehicleService.delete(id);
