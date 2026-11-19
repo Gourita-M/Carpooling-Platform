@@ -14,7 +14,6 @@ public record TripResponseDTO(
         int remainingSeats,
         TripStatus status,
         Long driverId,
-        Long vehicleId,
-        List<StoppingPointResponseDTO> stoppingPoints
+        Long vehicleId
 ) {}
 
