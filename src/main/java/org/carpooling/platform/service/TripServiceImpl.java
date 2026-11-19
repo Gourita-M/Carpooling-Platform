@@ -137,8 +137,9 @@ public class TripServiceImpl implements TripService {
         ).map(tripMapper::toResponseDTO);
     }
 
-    //Not Yet
+    //Done
     @Override
+    @Transactional
     public TripResponseDTO update(Long tripId, TripRequestDTO request) {
 
         Trip trip = tripRepository.findById(tripId)
@@ -147,17 +148,20 @@ public class TripServiceImpl implements TripService {
 
         if (trip.getStatus() != TripStatus.PUBLISHED) {
             throw new BusinessException(
-                    "Only published trips can be updated");
+                    "Only published trips can be updated"
+            );
         }
 
         if (!trip.getDriver().getId().equals(request.driverId())) {
             throw new BusinessException(
-                    "You cannot change the driver of this trip");
+                    "You are not allowed to update this trip"
+            );
         }
 
         if (bookingRepository.existsByTripId(tripId)) {
             throw new BusinessException(
-                    "Cannot update a trip with booking history");
+                    "Cannot update a trip that has bookings"
+            );
         }
 
         Vehicle vehicle = vehicleRepository.findById(request.vehicleId())
@@ -166,30 +170,44 @@ public class TripServiceImpl implements TripService {
 
         if (!vehicle.getDriver().getId().equals(request.driverId())) {
             throw new BusinessException(
-                    "This vehicle does not belong to this driver");
+                    "This vehicle does not belong to this driver"
+            );
         }
 
         validateSeats(request.seatsOffered(), vehicle.getCapacity());
 
         stoppingPointService.validatePoints(request.stoppingPoints());
 
-        Trip updatedTrip = tripMapper.toEntity(request);
-
         trip.getStoppingPoints().clear();
+
+        tripRepository.saveAndFlush(trip);
+
+        Trip updatedTrip = tripMapper.toEntity(request);
 
         List<StoppingPoint> newPoints = updatedTrip.getStoppingPoints();
 
         newPoints.forEach(point -> point.setTrip(trip));
+
         trip.getStoppingPoints().addAll(newPoints);
 
         trip.setVehicle(vehicle);
         trip.setSeatsOffered(request.seatsOffered());
-        trip.setDepartureCity(newPoints.get(0).getCity());
-        trip.setDestinationCity(
-                newPoints.get(newPoints.size() - 1).getCity());
-        trip.setDepartureDate(newPoints.get(0).getPassingTime());
 
-        return tripMapper.toResponseDTO(tripRepository.save(trip));
+        trip.setDepartureCity(
+                newPoints.get(0).getCity()
+        );
+
+        trip.setDestinationCity(
+                newPoints.get(newPoints.size() - 1).getCity()
+        );
+
+        trip.setDepartureDate(
+                newPoints.get(0).getPassingTime()
+        );
+
+        Trip savedTrip = tripRepository.save(trip);
+
+        return tripMapper.toResponseDTO(savedTrip);
     }
 
     //Done
