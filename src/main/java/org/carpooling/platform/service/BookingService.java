@@ -24,5 +24,5 @@ public interface BookingService {
             Long dropOffPointId,
             int numberOfSeats
     );
-    //int getRemainingSeats(Long tripId);
+    int getRemainingSeats(Long tripId);
 }
