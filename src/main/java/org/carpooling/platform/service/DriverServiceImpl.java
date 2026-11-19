@@ -1,5 +1,6 @@
 package org.carpooling.platform.service;
 
+import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.DriverRequestDTO;
 import org.carpooling.platform.dto.response.DriverResponseDTO;
 import org.carpooling.platform.entity.Driver;
@@ -8,16 +9,15 @@ import org.carpooling.platform.repository.DriverRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService{
     private final DriverRepository repository;
     private final DriverMapper mapper;
 
-    public DriverServiceImpl(DriverRepository repository, DriverMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
     //done on Postman
     @Override
     public DriverResponseDTO create(DriverRequestDTO dto){
@@ -26,6 +26,7 @@ public class DriverServiceImpl implements DriverService{
     }
     //done on Postman
     @Override
+    @Transactional(readOnly = true)
     public DriverResponseDTO findById(Long id){
         Driver driver = repository.findById(id).orElseThrow( () -> new IllegalArgumentException("Driver is not Found"));
         return mapper.toResponseDTO(driver);
@@ -33,6 +34,7 @@ public class DriverServiceImpl implements DriverService{
 
     //done on Postman
     @Override
+    @Transactional(readOnly = true)
     public Page<DriverResponseDTO> findAll(Pageable pageable){
         Page<Driver> drivers = repository.findAll(pageable);
         return drivers.map(mapper::toResponseDTO);
@@ -40,6 +42,7 @@ public class DriverServiceImpl implements DriverService{
 
     //done on Postman
     @Override
+    @Transactional(readOnly = true)
     public Page<DriverResponseDTO> search(String keyword, Pageable pageable){
         Page<Driver> drivers =
                 repository.findByFirstNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
