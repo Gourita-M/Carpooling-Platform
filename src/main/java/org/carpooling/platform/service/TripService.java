@@ -9,19 +9,19 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface TripService {
-    TripResponseDTO create(TripRequestDTO dto,Long driverId, Long vehicleId);
+    TripResponseDTO create(TripRequestDTO dto);
     TripResponseDTO findById(Long id);
     Page<TripResponseDTO> findAll(Pageable pageable);
     Page<TripResponseDTO> findByDriverId(Long driverId, Pageable pageable);
     Page<TripResponseDTO> search(
             String departureCity,
             String destinationCity,
-            LocalDate departureDate,
-            Long numberOfSeats,
-            Pageable pageable
-    );
-    TripResponseDTO update(Long tripId, TripRequestDTO request, Long driverId);
+            LocalDate date,
+            Integer numberOfSeats,
+            BigDecimal maxPrice,
+            Pageable pageable);
+    TripResponseDTO update(Long tripId, TripRequestDTO request);
     TripResponseDTO complete(Long tripId, Long driverId);
-    void cancel(Long tripId, Long driverId);
-//    int getRemainingSeats(Long tripId);
+    TripResponseDTO cancel(Long tripId, Long driverId);
+    int getRemainingSeats(Long tripId);
 }
