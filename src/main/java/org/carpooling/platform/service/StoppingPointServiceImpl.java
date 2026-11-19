@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.StoppingPointRequestDTO;
 import org.carpooling.platform.dto.response.StoppingPointResponseDTO;
 import org.carpooling.platform.entity.StoppingPoint;
+import org.carpooling.platform.exception.BusinessException;
+import org.carpooling.platform.exception.ResourceNotFoundException;
 import org.carpooling.platform.mapper.StoppingPointMapper;
 import org.carpooling.platform.repository.StoppingPointRepository;
 import org.carpooling.platform.repository.TripRepository;
@@ -40,7 +42,7 @@ public class StoppingPointServiceImpl implements StoppingPointService {
     public List<StoppingPointResponseDTO> findByTripId(Long tripId) {
 
         if (!tripRepository.existsById(tripId)) {
-            throw new IllegalArgumentException("Trip not found");
+            throw new ResourceNotFoundException("Trip not found");
         }
 
         return stoppingPointRepository
@@ -55,7 +57,7 @@ public class StoppingPointServiceImpl implements StoppingPointService {
             List<StoppingPointRequestDTO> points) {
 
         if (points == null || points.size() < 2) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "A trip must have at least two stopping points");
         }
 
@@ -66,19 +68,19 @@ public class StoppingPointServiceImpl implements StoppingPointService {
             StoppingPointRequestDTO current = points.get(i);
 
             if (current.city() == null || current.city().isBlank()) {
-                throw new IllegalArgumentException("City cannot be empty");
+                throw new BusinessException("City cannot be empty");
             }
 
             String normalizedCity =
                     current.city().trim().toLowerCase();
 
             if (!cities.add(normalizedCity)) {
-                throw new IllegalArgumentException(
+                throw new BusinessException(
                         "A city cannot appear twice in the same trip");
             }
 
             if (current.pointOrder() != i) {
-                throw new IllegalArgumentException(
+                throw new BusinessException(
                         "Stopping point order must start at 0 and be consecutive");
             }
 
