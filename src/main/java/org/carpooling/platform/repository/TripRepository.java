@@ -16,16 +16,8 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
             String departureCity,
             String destinationCity,
             LocalDate departureDate,
-            Long numberOfSeats,
+            int numberOfSeats,
             Pageable pageable
     );
-    Page<Trip>searchTrips(
-            String departureCity,
-            String destinationCity,
-            LocalDate date,
-            int numberOfSeats,
-            BigDecimal maxPrice,
-            Pageable pageable
-            );
     Trip findByIdAndDriver_Id(Long tripId, Long driverId);
 }
