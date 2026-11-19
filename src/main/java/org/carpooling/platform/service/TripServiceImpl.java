@@ -36,6 +36,7 @@ public class TripServiceImpl implements TripService {
     private final TripMapper tripMapper;
     private final StoppingPointService stoppingPointService;
 
+    //Done PostMan
     @Override
     public TripResponseDTO create(TripRequestDTO request) {
 
@@ -73,6 +74,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(tripRepository.save(trip));
     }
 
+    //Done PostMan
     @Override
     @Transactional(readOnly = true)
     public TripResponseDTO findById(Long id) {
@@ -84,6 +86,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(trip);
     }
 
+    //Done PostMan
     @Override
     @Transactional(readOnly = true)
     public Page<TripResponseDTO> findAll(Pageable pageable) {
@@ -91,6 +94,7 @@ public class TripServiceImpl implements TripService {
         return tripRepository.findAll(pageable)
                 .map(tripMapper::toResponseDTO);
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -105,6 +109,7 @@ public class TripServiceImpl implements TripService {
                 .map(tripMapper::toResponseDTO);
     }
 
+    //done
     @Override
     @Transactional(readOnly = true)
     public Page<TripResponseDTO> search(
@@ -123,12 +128,11 @@ public class TripServiceImpl implements TripService {
             throw new BusinessException("Maximum price cannot be negative");
         }
 
-        return tripRepository.searchTrips(
+        return tripRepository.findByDepartureCityContainingIgnoreCaseOrDestinationCityContainingIgnoreCaseOrDepartureDateContainingIgnoreCaseOrSeatsOfferedContainingIgnoreCase(
                 departureCity,
                 destinationCity,
                 date,
                 numberOfSeats,
-                maxPrice,
                 pageable
         ).map(tripMapper::toResponseDTO);
     }
