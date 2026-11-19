@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.TripRequestDTO;
 import org.carpooling.platform.dto.response.TripResponseDTO;
+import org.carpooling.platform.entity.Trip;
+import org.carpooling.platform.repository.TripRepository;
 import org.carpooling.platform.service.TripService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +25,7 @@ import java.time.LocalDate;
 public class TripController {
 
     private final TripService tripService;
-
+    //PostMan Done
     @PostMapping
     public ResponseEntity<TripResponseDTO> create(
             @Valid @RequestBody TripRequestDTO request) {
@@ -32,15 +34,14 @@ public class TripController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
+    //PostMan Done
     @GetMapping("/{id}")
     public ResponseEntity<TripResponseDTO> findById(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(tripService.findById(id));
     }
-
-    // FIND ALL TRIPS
+    //PostMan Done
     @GetMapping
     public ResponseEntity<Page<TripResponseDTO>> findAll(
             @PageableDefault(size = 10, sort = "departureDate")
@@ -48,8 +49,7 @@ public class TripController {
 
         return ResponseEntity.ok(tripService.findAll(pageable));
     }
-
-    // FIND TRIPS BY DRIVER
+    //PostMan Done
     @GetMapping("/driver/{driverId}")
     public ResponseEntity<Page<TripResponseDTO>> findByDriverId(
             @PathVariable Long driverId,
@@ -59,8 +59,7 @@ public class TripController {
         return ResponseEntity.ok(
                 tripService.findByDriverId(driverId, pageable));
     }
-
-    // SEARCH TRIPS
+    //PostMan Done
     @GetMapping("/search")
     public ResponseEntity<Page<TripResponseDTO>> search(
 
@@ -92,7 +91,7 @@ public class TripController {
                 )
         );
     }
-
+    //PostMan Done
     @PutMapping("/{tripId}")
     public ResponseEntity<TripResponseDTO> update(
             @PathVariable Long tripId,
@@ -101,8 +100,7 @@ public class TripController {
         return ResponseEntity.ok(
                 tripService.update(tripId, request));
     }
-
-    // COMPLETE TRIP
+    //PostMan Done
     @PatchMapping("/{id}/complete")
     public ResponseEntity<TripResponseDTO> complete(
             @PathVariable Long id,
@@ -111,8 +109,7 @@ public class TripController {
         return ResponseEntity.ok(
                 tripService.complete(id, driverId));
     }
-
-    // CANCEL TRIP
+    //PostMan Done
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<TripResponseDTO> cancel(
             @PathVariable Long id,
@@ -121,8 +118,7 @@ public class TripController {
         return ResponseEntity.ok(
                 tripService.cancel(id, driverId));
     }
-
-    // GET REMAINING SEATS
+    //PostMan Done
     @GetMapping("/{id}/remaining-seats")
     public ResponseEntity<Integer> getRemainingSeats(
             @PathVariable Long id) {
@@ -130,4 +126,5 @@ public class TripController {
         return ResponseEntity.ok(
                 tripService.getRemainingSeats(id));
     }
+
 }
