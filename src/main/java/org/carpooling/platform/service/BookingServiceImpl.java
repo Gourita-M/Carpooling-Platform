@@ -1,5 +1,7 @@
 package org.carpooling.platform.service;
 
+import org.carpooling.platform.exception.BusinessException;
+import org.carpooling.platform.exception.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.BookingRequestDTO;
@@ -41,42 +43,42 @@ public class BookingServiceImpl implements BookingService {
         Passenger passenger = passengerRepository
                 .findById(request.passengerId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Passenger not found"));
+                        new ResourceNotFoundException("Passenger not found"));
 
         Trip trip = tripRepository.findById(request.tripId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Trip not found"));
+                        new ResourceNotFoundException("Trip not found"));
 
         StoppingPoint pickUp = stoppingPointRepository
                 .findById(request.pickUpPointId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Pickup point not found"));
 
         StoppingPoint dropOff = stoppingPointRepository
                 .findById(request.dropOffPointId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Drop-off point not found"));
 
         if (trip.getStatus() != TripStatus.PUBLISHED) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "This trip is not available for booking");
         }
 
         if (!pickUp.getTrip().getId().equals(trip.getId()) ||
                 !dropOff.getTrip().getId().equals(trip.getId())) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Stopping points do not belong to this trip");
         }
 
         if (pickUp.getPointOrder() >= dropOff.getPointOrder()) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Pickup point must come before drop-off point");
         }
 
         if (request.numberOfSeats() < 1) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "You must book at least one seat");
         }
 
@@ -85,14 +87,14 @@ public class BookingServiceImpl implements BookingService {
                 trip.getId(),
                 BookingStatus.CONFIRMED)) {
 
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "You already have a confirmed booking for this trip");
         }
 
         int remainingSeats = tripService.getRemainingSeats(trip.getId());
 
         if (request.numberOfSeats() > remainingSeats) {
-            throw new IllegalArgumentException("Not enough seats available");
+            throw new BusinessException("Not enough seats available");
         }
 
         BigDecimal totalAmount = calculatePrice(
@@ -204,29 +206,29 @@ public class BookingServiceImpl implements BookingService {
             int numberOfSeats) {
 
         if (numberOfSeats < 1) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Number of seats must be at least 1");
         }
 
         StoppingPoint pickUp = stoppingPointRepository
                 .findById(pickUpPointId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Pickup point not found"));
 
         StoppingPoint dropOff = stoppingPointRepository
                 .findById(dropOffPointId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Drop-off point not found"));
 
         if (!pickUp.getTrip().getId().equals(dropOff.getTrip().getId())) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Both stopping points must belong to the same trip");
         }
 
         if (pickUp.getPointOrder() >= dropOff.getPointOrder()) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Pickup point must come before drop-off point");
         }
 
