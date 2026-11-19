@@ -1,11 +1,13 @@
 package org.carpooling.platform.dto.request;
 
-
-import java.util.List;
+import org.carpooling.platform.enums.TripStatus;
+import java.time.LocalDateTime;
 
 public record TripRequestDTO(
-        Long vehicleId,
+        String departureCity,
+        String destinationCity,
+        LocalDateTime departureDate,
         int seatsOffered,
-        List<StoppingPointRequestDTO> stoppingPoints
+        TripStatus status
 ) {}
 
