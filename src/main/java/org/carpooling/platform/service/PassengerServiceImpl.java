@@ -1,5 +1,6 @@
 package org.carpooling.platform.service;
 
+import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.PassengerRequestDTO;
 import org.carpooling.platform.dto.response.PassengerResponseDTO;
 import org.carpooling.platform.entity.Passenger;
@@ -8,16 +9,14 @@ import org.carpooling.platform.repository.PassengerRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService{
     private final PassengerRepository repository;
     private final PassengerMapper mapper;
-
-    public PassengerServiceImpl(PassengerRepository repository, PassengerMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     //done on PostMan
     @Override
@@ -28,6 +27,7 @@ public class PassengerServiceImpl implements PassengerService{
 
     //done on PostMan
     @Override
+    @Transactional(readOnly = true)
     public PassengerResponseDTO findById(Long id){
         Passenger passenger = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Passenger is not Found"));
         return mapper.toResponseDTO(passenger);
@@ -35,6 +35,7 @@ public class PassengerServiceImpl implements PassengerService{
 
     //done on PostMan
     @Override
+    @Transactional(readOnly = true)
     public Page<PassengerResponseDTO> findAll(Pageable pageable){
         Page<Passenger> passengers = repository.findAll(pageable);
         return passengers.map(mapper::toResponseDTO);
@@ -42,6 +43,7 @@ public class PassengerServiceImpl implements PassengerService{
 
     //done
     @Override
+    @Transactional(readOnly = true)
     public Page<PassengerResponseDTO> search(String email, Pageable pageable){
         Page<Passenger> passengers = repository.findByEmailContainingIgnoreCase(email, pageable);
         return passengers.map(mapper::toResponseDTO);
