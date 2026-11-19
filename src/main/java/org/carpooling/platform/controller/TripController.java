@@ -61,8 +61,7 @@ public class TripController {
             @RequestParam String destinationCity,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date,
-            @RequestParam(required = false) Integer numberOfSeats,
-            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Long numberOfSeats,
             Pageable pageable) {
 
         return ResponseEntity.ok(
@@ -71,19 +70,18 @@ public class TripController {
                         destinationCity,
                         date,
                         numberOfSeats,
-                        maxPrice,
                         pageable
                 ));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{tripId}")
     public ResponseEntity<TripResponseDTO> update(
-            @PathVariable Long id,
+            @PathVariable Long tripId,
             @RequestParam Long driverId,
             @Valid @RequestBody TripRequestDTO request) {
 
         return ResponseEntity.ok(
-                tripService.update(id, request, driverId));
+                tripService.update(tripId, request, driverId));
     }
 
     @PatchMapping("/{id}/complete")
@@ -101,11 +99,11 @@ public class TripController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/remaining-seats")
-    public ResponseEntity<Integer> getRemainingSeats(
-            @PathVariable Long id) {
-        return ResponseEntity.ok(tripService.getRemainingSeats(id));
-    }
+//    @GetMapping("/{id}/remaining-seats")
+//    public ResponseEntity<Integer> getRemainingSeats(
+//            @PathVariable Long id) {
+//        return ResponseEntity.ok(tripService.getRemainingSeats(id));
+//    }
 
     @GetMapping("/{id}/bookings")
     public ResponseEntity<Page<BookingResponseDTO>> getBookings(
