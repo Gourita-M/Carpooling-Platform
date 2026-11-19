@@ -1,9 +1,8 @@
 
-package org.carpooling.platform.service.impl;
+package org.carpooling.platform.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.TripRequestDTO;
-import org.carpooling.platform.dto.request.StoppingPointRequestDTO;
 import org.carpooling.platform.dto.response.TripResponseDTO;
 import org.carpooling.platform.entity.*;
 import org.carpooling.platform.enums.BookingStatus;

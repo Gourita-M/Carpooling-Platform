@@ -1,4 +1,4 @@
-package org.carpooling.platform.service;
+package org.carpooling.platform.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.StoppingPointRequestDTO;
@@ -9,6 +9,7 @@ import org.carpooling.platform.exception.ResourceNotFoundException;
 import org.carpooling.platform.mapper.StoppingPointMapper;
 import org.carpooling.platform.repository.StoppingPointRepository;
 import org.carpooling.platform.repository.TripRepository;
+import org.carpooling.platform.service.StoppingPointService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

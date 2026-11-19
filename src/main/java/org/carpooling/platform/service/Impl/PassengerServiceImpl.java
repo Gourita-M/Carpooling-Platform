@@ -1,4 +1,4 @@
-package org.carpooling.platform.service;
+package org.carpooling.platform.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.PassengerRequestDTO;
@@ -6,6 +6,7 @@ import org.carpooling.platform.dto.response.PassengerResponseDTO;
 import org.carpooling.platform.entity.Passenger;
 import org.carpooling.platform.mapper.PassengerMapper;
 import org.carpooling.platform.repository.PassengerRepository;
+import org.carpooling.platform.service.PassengerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PassengerServiceImpl implements PassengerService{
+public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository repository;
     private final PassengerMapper mapper;
 

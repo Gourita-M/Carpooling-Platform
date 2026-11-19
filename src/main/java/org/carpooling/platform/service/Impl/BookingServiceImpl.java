@@ -1,7 +1,9 @@
-package org.carpooling.platform.service;
+package org.carpooling.platform.service.Impl;
 
 import org.carpooling.platform.exception.BusinessException;
 import org.carpooling.platform.exception.ResourceNotFoundException;
+import org.carpooling.platform.service.BookingService;
+import org.carpooling.platform.service.TripService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.BookingRequestDTO;

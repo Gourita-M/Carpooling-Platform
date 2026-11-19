@@ -1,4 +1,4 @@
-package org.carpooling.platform.service;
+package org.carpooling.platform.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.VehicleRequestDTO;
@@ -7,10 +7,10 @@ import org.carpooling.platform.entity.Driver;
 import org.carpooling.platform.entity.Vehicle;
 import org.carpooling.platform.exception.BusinessException;
 import org.carpooling.platform.exception.ResourceNotFoundException;
-import org.carpooling.platform.mapper.DriverMapper;
 import org.carpooling.platform.mapper.VehicleMapper;
 import org.carpooling.platform.repository.DriverRepository;
 import org.carpooling.platform.repository.VehicleRepository;
+import org.carpooling.platform.service.VehicleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class VehicleServiceImpl implements VehicleService{
+public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository repository;
     private final DriverRepository driverRepository;
     private final VehicleMapper mapper;
