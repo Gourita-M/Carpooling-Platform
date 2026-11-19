@@ -18,6 +18,7 @@ public class DriverController {
 
     private final DriverService driverService;
 
+    //PostMan Done
     @PostMapping
     public ResponseEntity<DriverResponseDTO> create(
             @Valid @RequestBody DriverRequestDTO request) {
@@ -25,18 +26,21 @@ public class DriverController {
                 .body(driverService.create(request));
     }
 
+    //PostMan Done
     @GetMapping("/{id}")
     public ResponseEntity<DriverResponseDTO> findById(
             @PathVariable Long id) {
         return ResponseEntity.ok(driverService.findById(id));
     }
 
+    //PostMan Done
     @GetMapping
     public ResponseEntity<Page<DriverResponseDTO>> findAll(
             Pageable pageable) {
         return ResponseEntity.ok(driverService.findAll(pageable));
     }
 
+    //PostMan Done
     @GetMapping("/search")
     public ResponseEntity<Page<DriverResponseDTO>> search(
             @RequestParam String keyword,
@@ -44,6 +48,7 @@ public class DriverController {
         return ResponseEntity.ok(driverService.search(keyword, pageable));
     }
 
+    //PostMan Done
     @PutMapping("/{id}")
     public ResponseEntity<DriverResponseDTO> update(
             @PathVariable Long id,
@@ -51,6 +56,7 @@ public class DriverController {
         return ResponseEntity.ok(driverService.update(id, request));
     }
 
+    //PostMan Done
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         driverService.delete(id);
