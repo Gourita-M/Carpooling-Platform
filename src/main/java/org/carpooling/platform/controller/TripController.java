@@ -93,14 +93,13 @@ public class TripController {
         );
     }
 
-    // UPDATE TRIP
-    @PutMapping("/{id}")
+    @PutMapping("/{tripId}")
     public ResponseEntity<TripResponseDTO> update(
-            @PathVariable Long id,
+            @PathVariable Long tripId,
             @Valid @RequestBody TripRequestDTO request) {
 
         return ResponseEntity.ok(
-                tripService.update(id, request));
+                tripService.update(tripId, request));
     }
 
     // COMPLETE TRIP
