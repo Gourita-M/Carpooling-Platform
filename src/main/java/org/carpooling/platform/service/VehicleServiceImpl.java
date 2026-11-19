@@ -1,5 +1,6 @@
 package org.carpooling.platform.service;
 
+import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.VehicleRequestDTO;
 import org.carpooling.platform.dto.response.VehicleResponseDTO;
 import org.carpooling.platform.entity.Driver;
@@ -9,20 +10,17 @@ import org.carpooling.platform.mapper.VehicleMapper;
 import org.carpooling.platform.repository.DriverRepository;
 import org.carpooling.platform.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class VehicleServiceImpl implements VehicleService{
     private final VehicleRepository repository;
     private final DriverRepository driverRepository;
     private final VehicleMapper mapper;
-
-    public VehicleServiceImpl(VehicleRepository repository, DriverRepository driverRepository, VehicleMapper mapper) {
-        this.repository = repository;
-        this.driverRepository = driverRepository;
-        this.mapper = mapper;
-    }
 
     //done PostMan
     @Override
@@ -38,6 +36,7 @@ public class VehicleServiceImpl implements VehicleService{
 
     //done on PostMan
     @Override
+    @Transactional(readOnly = true)
     public VehicleResponseDTO findById(Long id){
         Vehicle vehicle = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Vehicle is Not Found"));
         return mapper.toResponseDTO(vehicle);
@@ -45,6 +44,7 @@ public class VehicleServiceImpl implements VehicleService{
 
     //done on PostMan
     @Override
+    @Transactional(readOnly = true)
     public List<VehicleResponseDTO> findByDriverId(Long driverId){
         List<Vehicle> vehicles = repository.findAllByDriverId(driverId);
         return vehicles.stream().map(mapper::toResponseDTO).toList();
