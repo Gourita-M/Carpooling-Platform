@@ -21,6 +21,7 @@ public class BookingController {
 
     private final BookingService bookingService;
 
+    //PostMan Done
     @PostMapping
     public ResponseEntity<BookingResponseDTO> create(
             @Valid @RequestBody BookingRequestDTO request) {
@@ -28,12 +29,14 @@ public class BookingController {
                 .body(bookingService.create(request));
     }
 
+    //PostMan Done
     @GetMapping("/{id}")
     public ResponseEntity<BookingResponseDTO> findById(
             @PathVariable Long id) {
         return ResponseEntity.ok(bookingService.findById(id));
     }
 
+    //PostMan Done
     @GetMapping("/passenger/{passengerId}")
     public ResponseEntity<Page<BookingResponseDTO>> findByPassengerId(
             @PathVariable Long passengerId,
@@ -41,7 +44,7 @@ public class BookingController {
         return ResponseEntity.ok(
                 bookingService.findByPassengerId(passengerId, pageable));
     }
-
+    //PostMan Done
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<BookingResponseDTO> cancel(
             @PathVariable Long id,
@@ -50,7 +53,8 @@ public class BookingController {
                 bookingService.cancel(id, passengerId));
     }
 
-    @PostMapping("/calculate-price")
+    //PostMan Done
+    @GetMapping("/calculate-price")
     public ResponseEntity<BigDecimal> calculatePrice(
             @RequestParam Long pickUpPointId,
             @RequestParam Long dropOffPointId,
