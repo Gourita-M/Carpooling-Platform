@@ -89,12 +89,11 @@ public class BookingServiceImpl implements BookingService {
                     "You already have a confirmed booking for this trip");
         }
 
-        // Check available seats.
-        //int remainingSeats = tripService.getRemainingSeats(trip.getId());
+        int remainingSeats = tripService.getRemainingSeats(trip.getId());
 
-//        if (request.numberOfSeats() > remainingSeats) {
-//            throw new IllegalArgumentException("Not enough seats available");
-//        }
+        if (request.numberOfSeats() > remainingSeats) {
+            throw new IllegalArgumentException("Not enough seats available");
+        }
 
         BigDecimal totalAmount = calculatePrice(
                 pickUp.getId(),
@@ -115,9 +114,9 @@ public class BookingServiceImpl implements BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-//        if (remainingSeats - request.numberOfSeats() == 0) {
-//            trip.setStatus(TripStatus.FULL);
-//        }
+        if (remainingSeats - request.numberOfSeats() == 0) {
+            trip.setStatus(TripStatus.FULL);
+        }
 
         return bookingMapper.toResponseDTO(savedBooking);
     }
@@ -240,10 +239,9 @@ public class BookingServiceImpl implements BookingService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public int getRemainingSeats(Long tripId) {
-//
-//        return tripService.getRemainingSeats(tripId);
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public int getRemainingSeats(Long tripId) {
+        return tripService.getRemainingSeats(tripId);
+    }
 }
