@@ -5,6 +5,8 @@ import org.carpooling.platform.dto.request.VehicleRequestDTO;
 import org.carpooling.platform.dto.response.VehicleResponseDTO;
 import org.carpooling.platform.entity.Driver;
 import org.carpooling.platform.entity.Vehicle;
+import org.carpooling.platform.exception.BusinessException;
+import org.carpooling.platform.exception.ResourceNotFoundException;
 import org.carpooling.platform.mapper.DriverMapper;
 import org.carpooling.platform.mapper.VehicleMapper;
 import org.carpooling.platform.repository.DriverRepository;
@@ -25,9 +27,9 @@ public class VehicleServiceImpl implements VehicleService{
     //done PostMan
     @Override
     public VehicleResponseDTO create(VehicleRequestDTO dto, Long driverId){
-        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new IllegalArgumentException("Driver is Not Found"));
+        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new ResourceNotFoundException("Driver is Not Found"));
         if(repository.existsByRegistrationNumber(dto.registrationNumber())){
-            throw new IllegalArgumentException("Registration Number Already Exists");
+            throw new BusinessException("Registration Number Already Exists");
         }
         Vehicle vehicle = mapper.toEntity(dto);
         vehicle.setDriver(driver);
@@ -38,7 +40,7 @@ public class VehicleServiceImpl implements VehicleService{
     @Override
     @Transactional(readOnly = true)
     public VehicleResponseDTO findById(Long id){
-        Vehicle vehicle = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Vehicle is Not Found"));
+        Vehicle vehicle = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vehicle is Not Found"));
         return mapper.toResponseDTO(vehicle);
     }
 
@@ -53,7 +55,7 @@ public class VehicleServiceImpl implements VehicleService{
     //done on PostMan
     @Override
     public VehicleResponseDTO update(Long vehicleId, VehicleRequestDTO request){
-        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Vehicle Is Not Found"));
+        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle Is Not Found"));
         vehicle.setMake(request.make());
         vehicle.setModel(request.model());
         vehicle.setRegistrationNumber(request.registrationNumber());
@@ -64,7 +66,7 @@ public class VehicleServiceImpl implements VehicleService{
 
     @Override
     public void delete(Long vehicleId){
-        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Vehicle Is Not Found"));
+        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle Is Not Found"));
         repository.delete(vehicle);
     }
 }
