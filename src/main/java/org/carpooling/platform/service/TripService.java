@@ -16,13 +16,12 @@ public interface TripService {
     Page<TripResponseDTO> search(
             String departureCity,
             String destinationCity,
-            LocalDate date,
-            Integer numberOfSeats,
-            BigDecimal maxPrice,
+            LocalDate departureDate,
+            Long numberOfSeats,
             Pageable pageable
     );
     TripResponseDTO update(Long tripId, TripRequestDTO request, Long driverId);
     TripResponseDTO complete(Long tripId, Long driverId);
     void cancel(Long tripId, Long driverId);
-    int getRemainingSeats(Long tripId);
+//    int getRemainingSeats(Long tripId);
 }
