@@ -36,7 +36,7 @@ public class TripServiceImpl implements TripService {
     private final TripMapper tripMapper;
     private final StoppingPointService stoppingPointService;
 
-    //Done PostMan
+    //Done
     @Override
     public TripResponseDTO create(TripRequestDTO request) {
 
@@ -74,7 +74,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(tripRepository.save(trip));
     }
 
-    //Done PostMan
+    //Done
     @Override
     @Transactional(readOnly = true)
     public TripResponseDTO findById(Long id) {
@@ -86,7 +86,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(trip);
     }
 
-    //Done PostMan
+    //Done
     @Override
     @Transactional(readOnly = true)
     public Page<TripResponseDTO> findAll(Pageable pageable) {
@@ -95,7 +95,7 @@ public class TripServiceImpl implements TripService {
                 .map(tripMapper::toResponseDTO);
     }
 
-
+    //Done
     @Override
     @Transactional(readOnly = true)
     public Page<TripResponseDTO> findByDriverId(
@@ -109,7 +109,7 @@ public class TripServiceImpl implements TripService {
                 .map(tripMapper::toResponseDTO);
     }
 
-    //done
+    //Done
     @Override
     @Transactional(readOnly = true)
     public Page<TripResponseDTO> search(
@@ -137,6 +137,7 @@ public class TripServiceImpl implements TripService {
         ).map(tripMapper::toResponseDTO);
     }
 
+    //Not Yet
     @Override
     public TripResponseDTO update(Long tripId, TripRequestDTO request) {
 
@@ -191,6 +192,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(tripRepository.save(trip));
     }
 
+    //Done
     @Override
     public TripResponseDTO complete(Long tripId, Long driverId) {
 
@@ -217,6 +219,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(tripRepository.save(trip));
     }
 
+    //Done
     @Override
     public TripResponseDTO cancel(Long tripId, Long driverId) {
 
@@ -245,6 +248,7 @@ public class TripServiceImpl implements TripService {
         return tripMapper.toResponseDTO(tripRepository.save(trip));
     }
 
+    //done
     @Override
     @Transactional(readOnly = true)
     public int getRemainingSeats(Long tripId) {
@@ -259,6 +263,7 @@ public class TripServiceImpl implements TripService {
         return trip.getSeatsOffered() - bookedSeats.intValue();
     }
 
+    //Done
     private void validateSeats(int seatsOffered, int capacity) {
 
         if (seatsOffered < 1 || seatsOffered > capacity) {
