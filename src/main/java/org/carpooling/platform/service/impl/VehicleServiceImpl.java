@@ -83,7 +83,10 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void delete(Long vehicleId){
     log.info("Deleting Vehicle:{}", vehicleId);
-        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle Is Not Found"));
+        Vehicle vehicle = repository.findById(vehicleId).orElseThrow(() -> {
+            log.warn("Vehicle: {}, Can't Be Found", vehicleId);
+            return new ResourceNotFoundException("Vehicle Is Not Found");
+        });
         repository.delete(vehicle);
     }
 }
