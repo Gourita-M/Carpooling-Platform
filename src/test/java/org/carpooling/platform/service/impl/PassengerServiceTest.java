@@ -70,10 +70,6 @@ class PassengerServiceTest {
         verify(mapper).toResponseDTO(passenger);
     }
 
-    // ==========================================
-    // FIND BY ID
-    // ==========================================
-
     @Test
     void findById_shouldReturnPassengerSuccessfully() {
 
@@ -102,10 +98,6 @@ class PassengerServiceTest {
 
         verify(mapper, never()).toResponseDTO(any());
     }
-
-    // ==========================================
-    // FIND ALL
-    // ==========================================
 
     @Test
     void findAll_shouldReturnPassengersSuccessfully() {
@@ -151,10 +143,6 @@ class PassengerServiceTest {
         verify(repository).findAll(pageable);
         verifyNoInteractions(mapper);
     }
-
-    // ==========================================
-    // SEARCH
-    // ==========================================
 
     @Test
     void search_shouldReturnMatchingPassengers() {
@@ -202,10 +190,6 @@ class PassengerServiceTest {
         verifyNoInteractions(mapper);
     }
 
-    // ==========================================
-    // UPDATE
-    // ==========================================
-
     @Test
     void update_shouldUpdatePassengerSuccessfully() {
 
@@ -246,10 +230,6 @@ class PassengerServiceTest {
         verify(mapper, never()).toEntity(any());
         verify(repository, never()).save(any());
     }
-
-    // ==========================================
-    // DELETE
-    // ==========================================
 
     @Test
     void delete_shouldDeletePassengerSuccessfully() {

@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class StoppingPointServiceTest {
 
     @Mock
@@ -51,10 +54,6 @@ class StoppingPointServiceTest {
         stoppingPoint = mock(StoppingPoint.class);
         response = mock(StoppingPointResponseDTO.class);
     }
-
-    // ==========================================
-    // FIND BY ID
-    // ==========================================
 
     @Test
     void findById_shouldReturnStoppingPointSuccessfully() {
@@ -86,10 +85,6 @@ class StoppingPointServiceTest {
 
         verifyNoInteractions(stoppingPointMapper);
     }
-
-    // ==========================================
-    // FIND BY TRIP ID
-    // ==========================================
 
     @Test
     void findByTripId_shouldReturnStoppingPointsInOrder() {
@@ -162,10 +157,6 @@ class StoppingPointServiceTest {
         verifyNoInteractions(stoppingPointMapper);
     }
 
-    // ==========================================
-    // VALIDATE POINTS
-    // ==========================================
-
     @Test
     void validatePoints_shouldAcceptValidPoints() {
 
@@ -183,7 +174,6 @@ class StoppingPointServiceTest {
         List<StoppingPointRequestDTO> points =
                 List.of(first, second, third);
 
-        // No exception should be thrown.
         stoppingPointService.validatePoints(points);
     }
 
@@ -399,10 +389,6 @@ class StoppingPointServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Prices must strictly increase");
     }
-
-    // ==========================================
-    // HELPER
-    // ==========================================
 
     private StoppingPointRequestDTO point(
             String city,

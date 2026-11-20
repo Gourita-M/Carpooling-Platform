@@ -52,8 +52,6 @@ class VehicleServiceTest {
         response = mock(VehicleResponseDTO.class);
     }
 
-    // ========================= CREATE =========================
-
     @Test
     void create_shouldCreateVehicleSuccessfully() {
         Long driverId = 1L;
@@ -102,8 +100,6 @@ class VehicleServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // ========================= FIND BY ID =========================
-
     @Test
     void findById_shouldReturnVehicleWhenItExists() {
         Long vehicleId = 1L;
@@ -131,8 +127,6 @@ class VehicleServiceTest {
 
         verify(mapper, never()).toResponseDTO(any());
     }
-
-    // ========================= FIND BY DRIVER ID =========================
 
     @Test
     void findByDriverId_shouldReturnVehiclesForDriver() {
@@ -170,8 +164,6 @@ class VehicleServiceTest {
         verify(mapper, never()).toResponseDTO(any());
     }
 
-    // ========================= UPDATE =========================
-
     @Test
     void update_shouldUpdateVehicleSuccessfully() {
         Long vehicleId = 1L;
@@ -207,8 +199,6 @@ class VehicleServiceTest {
         verify(repository, never()).save(any());
         verifyNoInteractions(mapper);
     }
-
-    // ========================= DELETE =========================
 
     @Test
     void delete_shouldDeleteVehicleSuccessfully() {

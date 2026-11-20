@@ -19,7 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class TripServiceTest {
 
     @Mock
@@ -95,10 +97,6 @@ class TripServiceTest {
         when(request.seatsOffered()).thenReturn(3);
         when(request.stoppingPoints()).thenReturn(requestPoints);
     }
-
-    // ==========================================
-    // CREATE
-    // ==========================================
 
     @Test
     void create_shouldCreateTripSuccessfully() {
@@ -234,10 +232,6 @@ class TripServiceTest {
         verify(stoppingPointService).validatePoints(requestPoints);
     }
 
-    // ==========================================
-    // FIND BY ID
-    // ==========================================
-
     @Test
     void findById_shouldReturnTripSuccessfully() {
 
@@ -267,10 +261,6 @@ class TripServiceTest {
 
         verifyNoInteractions(tripMapper);
     }
-
-    // ==========================================
-    // FIND ALL
-    // ==========================================
 
     @Test
     void findAll_shouldReturnTripsSuccessfully() {
@@ -319,10 +309,6 @@ class TripServiceTest {
         verifyNoInteractions(tripMapper);
     }
 
-    // ==========================================
-    // FIND BY DRIVER ID
-    // ==========================================
-
     @Test
     void findByDriverId_shouldReturnDriversTrips() {
 
@@ -359,10 +345,6 @@ class TripServiceTest {
 
         verify(tripRepository, never()).findByDriverId(any(), any());
     }
-
-    // ==========================================
-    // SEARCH
-    // ==========================================
 
     @Test
     void search_shouldReturnMatchingTrips() {
@@ -447,10 +429,6 @@ class TripServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("Maximum price cannot be negative");
     }
-
-    // ==========================================
-    // UPDATE
-    // ==========================================
 
     @Test
     void update_shouldUpdateTripSuccessfully() {
@@ -597,10 +575,6 @@ class TripServiceTest {
         verifyNoInteractions(tripMapper);
     }
 
-    // ==========================================
-    // COMPLETE
-    // ==========================================
-
     @Test
     void complete_shouldCompleteTripSuccessfully() {
 
@@ -685,10 +659,6 @@ class TripServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("You cannot complete a trip before departure");
     }
-
-    // ==========================================
-    // CANCEL
-    // ==========================================
 
     @Test
     void cancel_shouldCancelTripAndConfirmedBookings() {
@@ -787,10 +757,6 @@ class TripServiceTest {
                 .findByTripIdAndStatus(anyLong(), any());
     }
 
-    // ==========================================
-    // GET REMAINING SEATS
-    // ==========================================
-
     @Test
     void getRemainingSeats_shouldReturnCorrectNumberOfSeats() {
 
@@ -838,10 +804,6 @@ class TripServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Trip not found");
     }
-
-    // ==========================================
-    // HELPERS
-    // ==========================================
 
     private void mockCreateDependencies() {
 

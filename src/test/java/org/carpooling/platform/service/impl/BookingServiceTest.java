@@ -422,10 +422,6 @@ class BookingServiceTest {
                 .isInstanceOf(BusinessException.class);
     }
 
-    // =========================
-    // CALCULATE PRICE
-    // =========================
-
     @Test
     void calculatePrice_shouldReturnCorrectPrice() {
         when(stoppingPointRepository.findById(100L))
@@ -501,10 +497,6 @@ class BookingServiceTest {
                 .isInstanceOf(BusinessException.class);
     }
 
-    // =========================
-    // GET REMAINING SEATS
-    // =========================
-
     @Test
     void getRemainingSeats_shouldDelegateToTripService() {
         when(tripService.getRemainingSeats(10L)).thenReturn(3);
@@ -514,10 +506,6 @@ class BookingServiceTest {
         assertThat(result).isEqualTo(3);
         verify(tripService).getRemainingSeats(10L);
     }
-
-    // =========================
-    // HELPERS
-    // =========================
 
     private BookingRequestDTO request(int seats) {
         return new BookingRequestDTO(
