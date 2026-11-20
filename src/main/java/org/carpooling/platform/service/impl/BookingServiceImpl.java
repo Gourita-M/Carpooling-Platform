@@ -1,4 +1,4 @@
-package org.carpooling.platform.service.Impl;
+package org.carpooling.platform.service.impl;
 
 import org.carpooling.platform.exception.BusinessException;
 import org.carpooling.platform.exception.ResourceNotFoundException;

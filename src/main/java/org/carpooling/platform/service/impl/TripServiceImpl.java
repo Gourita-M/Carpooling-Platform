@@ -1,5 +1,5 @@
 
-package org.carpooling.platform.service.Impl;
+package org.carpooling.platform.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.carpooling.platform.dto.request.TripRequestDTO;
