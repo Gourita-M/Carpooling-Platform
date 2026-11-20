@@ -1,6 +1,7 @@
 package org.carpooling.platform.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.carpooling.platform.dto.request.StoppingPointRequestDTO;
 import org.carpooling.platform.dto.response.StoppingPointResponseDTO;
 import org.carpooling.platform.entity.StoppingPoint;
@@ -22,6 +23,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class StoppingPointServiceImpl implements StoppingPointService {
 
     private final StoppingPointRepository stoppingPointRepository;
@@ -30,22 +32,21 @@ public class StoppingPointServiceImpl implements StoppingPointService {
 
     @Override
     public StoppingPointResponseDTO findById(Long id) {
-
-        StoppingPoint point = stoppingPointRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Stopping point not found"));
-
+    log.info("Getting StoppingPoint With ID: {}", id);
+        StoppingPoint point = stoppingPointRepository.findById(id).orElseThrow(() -> {
+            log.warn("Stopping Point ID: {}", id);
+            return new IllegalArgumentException("Stopping point not found");
+        });
         return stoppingPointMapper.toResponseDTO(point);
     }
 
     @Override
     public List<StoppingPointResponseDTO> findByTripId(Long tripId) {
-
+    log.info("Getting Stopping Point With Trip ID: {}", tripId);
         if (!tripRepository.existsById(tripId)) {
+            log.warn("Trip ID: {}, Can't Be Found", tripId);
             throw new ResourceNotFoundException("Trip not found");
         }
-
         return stoppingPointRepository
                 .findByTripIdOrderByPointOrderAsc(tripId)
                 .stream()
@@ -54,12 +55,11 @@ public class StoppingPointServiceImpl implements StoppingPointService {
     }
 
     @Override
-    public void validatePoints(
-            List<StoppingPointRequestDTO> points) {
-
+    public void validatePoints(List<StoppingPointRequestDTO> points) {
+    log.info("Validating Stopping points");
         if (points == null || points.size() < 2) {
-            throw new BusinessException(
-                    "A trip must have at least two stopping points");
+            log.warn("Trip Can't Have < 2 Stopping Points");
+            throw new BusinessException("A trip must have at least two stopping points");
         }
 
         Set<String> cities = new HashSet<>();
@@ -69,60 +69,56 @@ public class StoppingPointServiceImpl implements StoppingPointService {
             StoppingPointRequestDTO current = points.get(i);
 
             if (current.city() == null || current.city().isBlank()) {
+                log.warn("City field Can't Be Empty");
                 throw new BusinessException("City cannot be empty");
             }
 
-            String normalizedCity =
-                    current.city().trim().toLowerCase();
+            String normalizedCity = current.city().trim().toLowerCase();
 
             if (!cities.add(normalizedCity)) {
-                throw new BusinessException(
-                        "A city cannot appear twice in the same trip");
+                log.warn("City Deduplicated");
+                throw new BusinessException("A city cannot appear twice in the same trip");
             }
 
             if (current.pointOrder() != i) {
-                throw new BusinessException(
-                        "Stopping point order must start at 0 and be consecutive");
+                log.warn("There is No Starting Point");
+                throw new BusinessException("Stopping point order must start at 0 and be consecutive");
             }
 
-            if (current.passingTime() == null ||
-                    current.priceFromDeparture() == null) {
-                throw new IllegalArgumentException(
-                        "Passing time and price are required");
+            if (current.passingTime() == null || current.priceFromDeparture() == null) {
+                log.warn("Passing Time and Price Fields Are Empty");
+                throw new IllegalArgumentException("Passing time and price are required");
             }
 
             if (current.priceFromDeparture().signum() < 0) {
-                throw new IllegalArgumentException(
-                        "Price cannot be negative");
+                log.warn("Price Can't be Negative");
+                throw new IllegalArgumentException("Price cannot be negative");
             }
 
             if (i == 0) {
 
                 if (!current.passingTime().isAfter(LocalDateTime.now())) {
-                    throw new IllegalArgumentException(
-                            "Departure must be in the future");
+                    log.warn("Departure Is In the Past");
+                    throw new IllegalArgumentException("Departure must be in the future");
                 }
 
-                if (current.priceFromDeparture()
-                        .compareTo(BigDecimal.ZERO) != 0) {
-                    throw new IllegalArgumentException(
-                            "Departure point price must be zero");
+                if (current.priceFromDeparture().compareTo(BigDecimal.ZERO) != 0) {
+                    log.warn("Departure Point Price != 0");
+                    throw new IllegalArgumentException("Departure point price must be zero");
                 }
 
             } else {
 
                 StoppingPointRequestDTO previous = points.get(i - 1);
 
-                if (!current.passingTime()
-                        .isAfter(previous.passingTime())) {
-                    throw new IllegalArgumentException(
-                            "Passing times must be strictly increasing");
+                if (!current.passingTime().isAfter(previous.passingTime())) {
+                    log.warn("Passing Time Not increasing");
+                    throw new IllegalArgumentException("Passing times must be strictly increasing");
                 }
 
-                if (current.priceFromDeparture()
-                        .compareTo(previous.priceFromDeparture()) <= 0) {
-                    throw new IllegalArgumentException(
-                            "Prices must strictly increase");
+                if (current.priceFromDeparture().compareTo(previous.priceFromDeparture()) <= 0) {
+                    log.warn("Prices Not increase");
+                    throw new IllegalArgumentException("Prices must strictly increase");
                 }
             }
         }

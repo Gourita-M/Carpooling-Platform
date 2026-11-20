@@ -1,5 +1,6 @@
 package org.carpooling.platform.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.carpooling.platform.exception.BusinessException;
 import org.carpooling.platform.exception.ResourceNotFoundException;
 import org.carpooling.platform.service.BookingService;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -42,67 +44,67 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDTO create(BookingRequestDTO request) {
 
+        log.info("Creating Booking For Passenger ID: {}", request.passengerId());
         Passenger passenger = passengerRepository
                 .findById(request.passengerId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Passenger not found"));
+                .orElseThrow(() -> {
+                    log.warn("Creating Booking Rejected, Passenger ID: {} is not Found", request.passengerId());
+                    return new ResourceNotFoundException("Passenger not found");
+                });
 
         Trip trip = tripRepository.findById(request.tripId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Trip not found"));
+                .orElseThrow(() -> {
+                    log.warn("Creating Booking Rejected, Trip ID: {} is Not Found", request.tripId());
+                    return new ResourceNotFoundException("Trip not found");
+                });
 
         StoppingPoint pickUp = stoppingPointRepository
                 .findById(request.pickUpPointId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Pickup point not found"));
+                .orElseThrow(() -> {
+                    log.warn("Creating Booking Rejected, Pick up Point ID: {} is Not Found", request.pickUpPointId());
+                    return new ResourceNotFoundException("Pickup point not found");
+                });
 
         StoppingPoint dropOff = stoppingPointRepository
                 .findById(request.dropOffPointId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Drop-off point not found"));
+                .orElseThrow(() -> {
+                    log.warn("Creating Booking Rejected, Drop off Point ID: {} is Not Found", request.dropOffPointId());
+                    return new ResourceNotFoundException("Drop-off point not found");
+                });
 
         if (trip.getStatus() != TripStatus.PUBLISHED) {
-            throw new BusinessException(
-                    "This trip is not available for booking");
+            log.warn("Creating Booking Rejected, Trip ID: {} is not available for booking", trip.getId());
+            throw new BusinessException("This trip is not available for booking");
         }
 
-        if (!pickUp.getTrip().getId().equals(trip.getId()) ||
-                !dropOff.getTrip().getId().equals(trip.getId())) {
-            throw new BusinessException(
-                    "Stopping points do not belong to this trip");
+        if (!pickUp.getTrip().getId().equals(trip.getId()) || !dropOff.getTrip().getId().equals(trip.getId())) {
+            log.warn("Creating Booking Rejected, Stopping points don't belong to this trip");
+            throw new BusinessException("Stopping points do not belong to this trip");
         }
 
         if (pickUp.getPointOrder() >= dropOff.getPointOrder()) {
-            throw new BusinessException(
-                    "Pickup point must come before drop-off point");
+            log.warn("Creating Booking Rejected, Pickup point come before drop-off point");
+            throw new BusinessException("Pickup point must come before drop-off point");
         }
 
         if (request.numberOfSeats() < 1) {
-            throw new BusinessException(
-                    "You must book at least one seat");
+            log.warn("Creating Booking Rejected, Number of Seats is < 1");
+            throw new BusinessException("You must book at least one seat");
         }
 
-        if (bookingRepository.existsByPassengerIdAndTripIdAndStatus(
-                passenger.getId(),
-                trip.getId(),
-                BookingStatus.CONFIRMED)) {
-
-            throw new BusinessException(
-                    "You already have a confirmed booking for this trip");
+        if (bookingRepository.existsByPassengerIdAndTripIdAndStatus(passenger.getId(), trip.getId(), BookingStatus.CONFIRMED)) {
+            log.warn("Creating Booking Rejected, This Trip is Confirmed Already");
+            throw new BusinessException("You already have a confirmed booking for this trip");
         }
 
         int remainingSeats = tripService.getRemainingSeats(trip.getId());
 
         if (request.numberOfSeats() > remainingSeats) {
+            log.warn("Creating Booking Rejected, No Enough Seats Available");
             throw new BusinessException("Not enough seats available");
         }
 
-        BigDecimal totalAmount = calculatePrice(
-                pickUp.getId(),
-                dropOff.getId(),
-                request.numberOfSeats()
+        BigDecimal totalAmount = calculatePrice(pickUp.getId(), dropOff.getId(), request.numberOfSeats()
         );
 
         Booking booking = new Booking();
@@ -128,20 +130,23 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public BookingResponseDTO findById(Long id) {
-
+    log.info("Finding Booking With it's ID: {}", id);
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Booking not found"));
+                .orElseThrow(() -> {
+                    log.warn("Booking ID: {}, is not Found", id);
+                    return new ResourceNotFoundException("Booking not found");
+                });
 
         return bookingMapper.toResponseDTO(booking);
     }
     //done
     @Override
     @Transactional(readOnly = true)
-    public Page<BookingResponseDTO> findByPassengerId(
-            Long passengerId, Pageable pageable) {
+    public Page<BookingResponseDTO> findByPassengerId(Long passengerId, Pageable pageable) {
+    log.info("Finding a Booking By It's Passenger ID: {}", passengerId);
 
         if (!passengerRepository.existsById(passengerId)) {
+            log.warn("Booking for Passenger ID: {}, is not Found", passengerId);
             throw new ResourceNotFoundException("Passenger not found");
         }
 
@@ -151,10 +156,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<BookingResponseDTO> findByTripId(
-            Long tripId, Pageable pageable) {
+    public Page<BookingResponseDTO> findByTripId(Long tripId, Pageable pageable) {
+        log.info("Finding Trip ID: {}", tripId);
 
         if (!tripRepository.existsById(tripId)) {
+            log.warn("Trip ID: {}, is not Found", tripId);
             throw new ResourceNotFoundException("Trip not found");
         }
 
@@ -164,19 +170,22 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDTO cancel(Long bookingId, Long passengerId) {
+    log.info("Canceling a Booking");
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Booking not found"));
+                .orElseThrow(() -> {
+                    log.warn("Booking ID: {}, Can't Be Found To be Canceled", bookingId);
+                    return new ResourceNotFoundException("Booking not found");
+                });
 
         if (!booking.getPassenger().getId().equals(passengerId)) {
-            throw new BusinessException(
-                    "You cannot cancel another passenger's booking");
+            log.warn("Booking ID: {}, Don't Belong To Passenger ID: {}", bookingId, passengerId);
+            throw new BusinessException("You cannot cancel another passenger's booking");
         }
 
         if (booking.getStatus() != BookingStatus.CONFIRMED) {
-            throw new BusinessException(
-                    "This booking is already cancelled");
+            log.warn("Booking ID: {}, Already Cancelled", bookingId);
+            throw new BusinessException("This booking is already cancelled");
         }
 
         Trip trip = booking.getTrip();
@@ -185,8 +194,8 @@ public class BookingServiceImpl implements BookingService {
                 trip.getDepartureDate().minusHours(24);
 
         if (LocalDateTime.now().isAfter(cancellationLimit)) {
-            throw new BusinessException(
-                    "Booking cancellation is only allowed 24 hours before departure");
+            log.warn("Booking ID: {}, Not Allowed to Be Cancelled 24H before Departure", bookingId);
+            throw new BusinessException("Booking cancellation is only allowed 24 hours before departure");
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
@@ -202,50 +211,47 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculatePrice(
-            Long pickUpPointId,
-            Long dropOffPointId,
-            int numberOfSeats) {
+    public BigDecimal calculatePrice(Long pickUpPointId, Long dropOffPointId, int numberOfSeats) {
+    log.info("Calculating Price");
 
         if (numberOfSeats < 1) {
-            throw new BusinessException(
-                    "Number of seats must be at least 1");
+            log.warn("Number of seats is Lower Than 1");
+            throw new BusinessException("Number of seats must be at least 1");
         }
 
         StoppingPoint pickUp = stoppingPointRepository
                 .findById(pickUpPointId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Pickup point not found"));
+                .orElseThrow(() -> {
+                    log.warn("Pickup point ID: {}, Can't Be Found", pickUpPointId);
+                    return new ResourceNotFoundException("Pickup point not found");
+                });
 
         StoppingPoint dropOff = stoppingPointRepository
                 .findById(dropOffPointId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Drop-off point not found"));
+                .orElseThrow(() -> {
+                    log.warn("Drop off ID: {}, Can't Be Found", dropOffPointId);
+                    return new ResourceNotFoundException("Drop-off point not found");
+                });
 
         if (!pickUp.getTrip().getId().equals(dropOff.getTrip().getId())) {
-            throw new BusinessException(
-                    "Both stopping points must belong to the same trip");
+            log.warn("stopping points must belong to the same trip ID: {}", pickUp.getTrip().getId());
+            throw new BusinessException("Both stopping points must belong to the same trip");
         }
 
         if (pickUp.getPointOrder() >= dropOff.getPointOrder()) {
-            throw new BusinessException(
-                    "Pickup point must come before drop-off point");
+            log.warn("Pickup point Can't be After drop-off point");
+            throw new BusinessException("Pickup point must come before drop-off point");
         }
 
-        BigDecimal pricePerSeat =
-                dropOff.getPriceFromDeparture()
-                        .subtract(pickUp.getPriceFromDeparture());
+        BigDecimal pricePerSeat = dropOff.getPriceFromDeparture().subtract(pickUp.getPriceFromDeparture());
 
-        return pricePerSeat
-                .multiply(BigDecimal.valueOf(numberOfSeats))
-                .setScale(2, RoundingMode.HALF_UP);
+        return pricePerSeat.multiply(BigDecimal.valueOf(numberOfSeats)).setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
     @Transactional(readOnly = true)
     public int getRemainingSeats(Long tripId) {
+        log.info("Getting RemainingSeats");
         return tripService.getRemainingSeats(tripId);
     }
 }
