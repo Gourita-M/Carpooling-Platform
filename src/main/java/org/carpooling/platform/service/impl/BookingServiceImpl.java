@@ -131,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Booking not found"));
+                        new ResourceNotFoundException("Booking not found"));
 
         return bookingMapper.toResponseDTO(booking);
     }
@@ -142,7 +142,7 @@ public class BookingServiceImpl implements BookingService {
             Long passengerId, Pageable pageable) {
 
         if (!passengerRepository.existsById(passengerId)) {
-            throw new IllegalArgumentException("Passenger not found");
+            throw new ResourceNotFoundException("Passenger not found");
         }
 
         return bookingRepository.findByPassengerId(passengerId, pageable)
@@ -155,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
             Long tripId, Pageable pageable) {
 
         if (!tripRepository.existsById(tripId)) {
-            throw new IllegalArgumentException("Trip not found");
+            throw new ResourceNotFoundException("Trip not found");
         }
 
         return bookingRepository.findByTripId(tripId, pageable)
@@ -167,15 +167,15 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Booking not found"));
+                        new ResourceNotFoundException("Booking not found"));
 
         if (!booking.getPassenger().getId().equals(passengerId)) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "You cannot cancel another passenger's booking");
         }
 
         if (booking.getStatus() != BookingStatus.CONFIRMED) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "This booking is already cancelled");
         }
 
@@ -185,7 +185,7 @@ public class BookingServiceImpl implements BookingService {
                 trip.getDepartureDate().minusHours(24);
 
         if (LocalDateTime.now().isAfter(cancellationLimit)) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Booking cancellation is only allowed 24 hours before departure");
         }
 
